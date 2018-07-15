@@ -2,8 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using EngineerTest.Data;
+using EngineerTest.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -21,6 +25,13 @@ namespace EngineerTest
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddIdentity<ApplicationUser, IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
+            
             services.AddMvc();
         }
 
@@ -44,6 +55,14 @@ namespace EngineerTest
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
+                routes.MapRoute(
+                    name: "About",
+                    template: "About",
+                    defaults: new { controller = "Home", action = "About" });
+                routes.MapRoute(
+                    name: "Contact",
+                    template: "Contact",
+                    defaults: new { controller = "Home", action = "Contact" });
             });
         }
     }
