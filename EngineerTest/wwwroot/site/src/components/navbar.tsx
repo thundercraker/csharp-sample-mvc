@@ -1,10 +1,40 @@
 import * as React from "react";
 
 export interface NavbarProps {
-    loggedIn: boolean
+    userName: string
 }
 
 export class Navbar extends React.Component<NavbarProps, {}>{
+    constructor(props: NavbarProps) {
+        super(props);
+        this.state = {};
+    }
+    
+    userControls = () => {
+        if (this.props.userName) {
+            return (
+                <form action={"Account/Logout"} method="post" id="logoutForm"
+                      className="navbar-right">
+                    <ul className="nav navbar-nav navbar-right">
+                        <li>
+                            <a href={"Manage"} title="Manage">Hello {this.props.userName}!</a>
+                        </li>
+                        <li>
+                            <button type="submit" className="btn btn-link navbar-btn navbar-link">Log out</button>
+                        </li>
+                    </ul>
+                </form>
+            );
+        } else {
+            return (
+                <ul className="nav navbar-nav navbar-right">
+                    <li><a href={"Account/Register"}>Register</a></li>
+                    <li><a href={"Account/Login"}>Log in</a></li>
+                </ul>
+            );
+        }
+    };
+    
     render() {
         return <nav className="navbar navbar-inverse navbar-fixed-top">
             <div className="container">
@@ -24,6 +54,7 @@ export class Navbar extends React.Component<NavbarProps, {}>{
                         <li><a href={"/About"}>About</a></li>
                         <li><a href={"/Contact"}>Contact</a></li>
                     </ul>
+                    {this.userControls()}
                 </div>
             </div>
         </nav>

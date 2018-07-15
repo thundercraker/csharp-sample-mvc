@@ -4,8 +4,14 @@ import * as ReactDOM from "react-dom";
 import {App} from "./components/app";
 import {Navbar} from "./components/navbar";
 
+// get user information
+function getUserName() {
+    const appDataEl = document.getElementById("app-data");
+    return appDataEl.dataset["username"];
+}
+
 ReactDOM.render(
-    <Navbar loggedIn={false} />,
+    <Navbar userName={getUserName()} />,
     document.getElementById("react-navbar")
 );
 

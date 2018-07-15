@@ -1,15 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using EngineerTest.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
 
 namespace EngineerTest.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : ControllerBase
     {
+        public HomeController(
+            UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager,
+            ILogger<HomeController> logger
+        ): base(userManager, signInManager, logger)
+        {
+            
+        }
+        
         public IActionResult Index()
         {
             return View();
