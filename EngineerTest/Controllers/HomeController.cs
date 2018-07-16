@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using EngineerTest.Models;
+using EngineerTest.Models.Data;
+using EngineerTest.Models.View;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 

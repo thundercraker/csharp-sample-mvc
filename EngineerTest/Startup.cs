@@ -1,33 +1,45 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using EngineerTest.Data;
-using EngineerTest.Models;
+using EngineerTest.Filters.HangFire;
+using EngineerTest.Jobs;
+using EngineerTest.Models.Data;
 using EngineerTest.Services;
+using Hangfire;
+using Hangfire.SQLite;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace EngineerTest
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IHostingEnvironment env)
         {
             Configuration = configuration;
+            CurrentEnvironment = env;
         }
 
-        public IConfiguration Configuration { get; }
+        private IConfiguration Configuration { get; }
+        
+        private IHostingEnvironment CurrentEnvironment { get; set; } 
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddTransient<ApplicationDbContextFactory>(sd => 
+                new ApplicationDbContextFactory(
+                    Configuration, CurrentEnvironment));
+            services.AddDbContext<ApplicationDbContext>(builder =>
+            {
+                var factory = new ApplicationDbContextFactory(
+                    Configuration, CurrentEnvironment);
+
+                factory.ConfigureContextOptions(builder);
+            });
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -61,10 +73,39 @@ namespace EngineerTest
                 options.AccessDeniedPath = "/Account/AccessDenied";
                 options.SlidingExpiration = true;
             });
-            
-            services.AddTransient<IEmailService, DevOnlyEmailService>();
+
+            if (CurrentEnvironment.IsDevelopment())
+            {
+                services.AddTransient<IEmailService, DevOnlyEmailService>();
+            }
+
+            services.AddTransient<CryptowatchService>(sd => 
+                new CryptowatchService(
+                    sd.GetService<ApplicationDbContextFactory>(),
+                    sd.GetService<ILogger<CryptowatchService>>()));
             
             services.AddMvc();
+
+            services.AddHangfire(configuration =>
+            {
+                configuration.UseActivator(new ContainerJobActivator(services.BuildServiceProvider()));
+                configuration.UseSQLiteStorage(Configuration.GetConnectionString("HangFireConnection"));
+            });
+        }
+        
+        public class ContainerJobActivator : JobActivator
+        {
+            private readonly IServiceProvider _provider;
+
+            public ContainerJobActivator(IServiceProvider provider)
+            {
+                _provider = provider;
+            }
+
+            public override object ActivateJob(Type type)
+            {
+                return _provider.GetService(type);
+            }
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -83,6 +124,18 @@ namespace EngineerTest
             app.UseStaticFiles();
             
             app.UseAuthentication();
+
+            app.UseHangfireDashboard("/hangfire", new DashboardOptions
+            {
+                Authorization = new [] { new CustomDashboardAuthorizationFilter() }
+            });
+            app.UseHangfireServer();
+            
+            // Set up the api update job
+            RecurringJob.AddOrUpdate<CryptowatchService>(
+                "DataRefrash.Cryptowatch",
+                _ => _.GetMarketTradeItemsAndSaveSummarySync(), 
+                Cron.Minutely);
 
             app.UseMvc(routes =>
             {

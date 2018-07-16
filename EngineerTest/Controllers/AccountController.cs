@@ -2,8 +2,8 @@
 using System.Security.Claims;
 using System.Threading.Tasks;
 using EngineerTest.Extensions;
-using EngineerTest.Models;
-using EngineerTest.Models.Account;
+using EngineerTest.Models.Data;
+using EngineerTest.Models.View.Account;
 using EngineerTest.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;

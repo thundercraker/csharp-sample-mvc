@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace EngineerTest.Models.Manage
+namespace EngineerTest.Models.View.Manage
 {
     public class IndexViewModel
     {
