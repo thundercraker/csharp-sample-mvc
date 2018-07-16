@@ -9,5 +9,11 @@ namespace EngineerTest.Extensions
         {
             return (int)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
         }
+        
+        public static DateTime FromUnixTimeStamp(
+            this long timeStamp)
+        {
+            return (new DateTime(1970, 1, 1)).AddSeconds(timeStamp);
+        }
     }
 }

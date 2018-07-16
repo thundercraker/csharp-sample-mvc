@@ -12,7 +12,8 @@ namespace EngineerTest.Models.Data
         public string ExchangeChoices { get; set; }
         /// <summary>
         /// comma seperated values of currencies that will appear on the
-        /// user's home/dashboard
+        /// user's home/dashboard, the format is a base and sub currency pair,
+        /// eg: "btc-usd", "ltc-jpy"
         /// </summary>
         public string CurrencyChoices { get; set; }
     }

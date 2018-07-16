@@ -12,9 +12,6 @@
     <DotNetCliToolReference Include="dotnet-xunit" Version="2.3.1" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Unit" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\EngineerTest\EngineerTest.csproj" />
   </ItemGroup>
 </Project>
