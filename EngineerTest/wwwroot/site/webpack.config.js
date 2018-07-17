@@ -1,4 +1,9 @@
-﻿module.exports = {
+﻿var webpack = require('webpack');
+var awesome = require('awesome-typescript-loader');
+
+module.exports = {
+  mode: 'development',
+  watch: true,
   entry: "./src/index.tsx",
   output: {
     filename: "bundle.js",
@@ -15,7 +20,13 @@
   module: {
     rules: [
       // All '.ts', '.tsx' -> 'awesome-typescript-loader'.
-      { test: /\.tsx?$/, loader: "awesome-typescript-loader" },
+      {
+        test: /\.tsx?$/, 
+        loader: "awesome-typescript-loader",
+        options: {
+          useCache: true
+        }
+      },
 
       // All output '.js' -> 'source-map-loader'.
       { enforce: "pre", test: /\.js$/, loader: "source-map-loader" }
@@ -27,5 +38,12 @@
   externals: {
     "react": "React",
     "react-dom": "ReactDOM"
-  }
+  },
+  plugins: [
+      new webpack.DefinePlugin({
+          'process.env.NODE_ENV': 'development',
+          'process.env.DEBUG': 'true'
+      }),
+      new awesome.CheckerPlugin()
+  ]
 };

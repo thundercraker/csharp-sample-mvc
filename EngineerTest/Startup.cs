@@ -78,11 +78,13 @@ namespace EngineerTest
             {
                 services.AddTransient<IEmailService, DevOnlyEmailService>();
             }
-
+            // TODO configure real email sending
+            
             services.AddTransient<CryptowatchService>(sd => 
                 new CryptowatchService(
                     sd.GetService<ApplicationDbContextFactory>(),
                     sd.GetService<ILogger<CryptowatchService>>()));
+            services.AddTransient<CryptowatchRepository>();
             
             services.AddMvc();
 

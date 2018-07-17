@@ -1,6 +1,7 @@
-﻿@{
+﻿@model EngineerTest.Models.View.Home.IndexViewModel
+@{
     ViewData["Title"] = "Home Page";
 }
 
-<div id="react-app"></div>
+<div id="react-app-index" data-model="@Model.ToJson()"></div>
 

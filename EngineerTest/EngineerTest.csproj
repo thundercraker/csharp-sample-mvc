@@ -21,4 +21,32 @@
   <ItemGroup>
     <Folder Include="wwwroot\site\node_modules\.bin" />
   </ItemGroup>
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="wwwroot\site\dist\bundle.js" />
+    <_ContentIncludedByDefault Remove="wwwroot\site\dist\bundle.js.map" />
+    <_ContentIncludedByDefault Remove="wwwroot\site\dist\charts\Utils.js" />
+    <_ContentIncludedByDefault Remove="wwwroot\site\dist\charts\Utils.js.map" />
+    <_ContentIncludedByDefault Remove="wwwroot\site\dist\components\CryptoChart.js" />
+    <_ContentIncludedByDefault Remove="wwwroot\site\dist\components\CryptoChart.js.map" />
+    <_ContentIncludedByDefault Remove="wwwroot\site\dist\components\IndexDashboard.js" />
+    <_ContentIncludedByDefault Remove="wwwroot\site\dist\components\IndexDashboard.js.map" />
+    <_ContentIncludedByDefault Remove="wwwroot\site\dist\components\Navbar.js" />
+    <_ContentIncludedByDefault Remove="wwwroot\site\dist\components\Navbar.js.map" />
+    <_ContentIncludedByDefault Remove="wwwroot\site\dist\components\TradesDashbord.js" />
+    <_ContentIncludedByDefault Remove="wwwroot\site\dist\components\TradesDashbord.js.map" />
+    <_ContentIncludedByDefault Remove="wwwroot\dist\bundle.js" />
+    <_ContentIncludedByDefault Remove="wwwroot\dist\bundle.js.map" />
+    <_ContentIncludedByDefault Remove="wwwroot\dist\charts\Utils.js" />
+    <_ContentIncludedByDefault Remove="wwwroot\dist\charts\Utils.js.map" />
+    <_ContentIncludedByDefault Remove="wwwroot\dist\components\CryptoChart.js" />
+    <_ContentIncludedByDefault Remove="wwwroot\dist\components\CryptoChart.js.map" />
+    <_ContentIncludedByDefault Remove="wwwroot\dist\components\IndexDashboard.js" />
+    <_ContentIncludedByDefault Remove="wwwroot\dist\components\IndexDashboard.js.map" />
+    <_ContentIncludedByDefault Remove="wwwroot\dist\components\Navbar.js" />
+    <_ContentIncludedByDefault Remove="wwwroot\dist\components\Navbar.js.map" />
+    <_ContentIncludedByDefault Remove="wwwroot\dist\components\TradesDashbord.js" />
+    <_ContentIncludedByDefault Remove="wwwroot\dist\components\TradesDashbord.js.map" />
+    <_ContentIncludedByDefault Remove="wwwroot\dist\index.js" />
+    <_ContentIncludedByDefault Remove="wwwroot\dist\index.js.map" />
+  </ItemGroup>
 </Project>

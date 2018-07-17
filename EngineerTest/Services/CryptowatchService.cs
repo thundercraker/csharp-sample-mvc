@@ -67,7 +67,7 @@ namespace EngineerTest.Services
         /// defined in CryptowatchService.AllExchangesAndMarkets and will save
         /// them to the database table <see cref="CryptoTrade"/>
         /// </summary>
-        public void GetMarketTradeItemsAndSaveSummarySync()
+        public virtual void GetMarketTradeItemsAndSaveSummarySync()
         {
             GetMarketTradeItemsAndSaveSummary()
                 .ConfigureAwait(false)
@@ -80,7 +80,7 @@ namespace EngineerTest.Services
         /// defined in CryptowatchService.AllExchangesAndMarkets and will save
         /// them to the database table <see cref="CryptoTrade"/>
         /// </summary>
-        public async Task GetMarketTradeItemsAndSaveSummary()
+        public virtual async Task GetMarketTradeItemsAndSaveSummary()
         {
             var newBatchId = Guid.NewGuid();
             int tradeNum = 1;
@@ -91,27 +91,36 @@ namespace EngineerTest.Services
                 .ToList();
             var allData = await Task.WhenAll(getDataTasks).ConfigureAwait(false);
 
-            var results =
-                (from marketTrades in allData
-                    where marketTrades != null
-                    from trade in marketTrades.Trades
-                    select new CryptoTrade()
-                    {
-                        RunId = newBatchId,
-                        TradeNum = tradeNum++,
-                        Amount = trade.Price,
-                        BaseCurrency = marketTrades.Market.Item1,
-                        SubCurrency = marketTrades.Market.Item2,
-                        Exchange = marketTrades.Exchange,
-                        Volume = trade.Volume,
-                        TimeStamp = trade.TimeStamp,
-                    }).ToList();
-            
             // add to database
             using (var dbContext = _dbContextFactory.GetContext())
             {
+                var latestTs = dbContext.CryptoTrades
+                                   .OrderByDescending(t => t.TimeStamp)
+                                   .Take(1)
+                                   .FirstOrDefault()?.TimeStamp ?? int.MinValue;
+                
+                var total = allData.Sum(mt => mt.Trades?.Count ?? 0);
+                
+                var results =
+                    (from marketTrades in allData
+                        where marketTrades != null
+                        from trade in marketTrades.Trades
+                        where trade.TimeStamp > latestTs
+                        select new CryptoTrade()
+                        {
+                            RunId = newBatchId,
+                            TradeNum = tradeNum++,
+                            Amount = trade.Price,
+                            BaseCurrency = marketTrades.Market.Item1,
+                            SubCurrency = marketTrades.Market.Item2,
+                            Exchange = marketTrades.Exchange,
+                            Volume = trade.Volume,
+                            TimeStamp = trade.TimeStamp,
+                        }).ToList();
+            
                 dbContext.CryptoTrades.AddRange(results);
                 await dbContext.SaveChangesAsync().ConfigureAwait(false);
+                _logger.LogInformation("Added {number} entries to CryptoTrades from {total}", results.Count, total);
             }
         }
         

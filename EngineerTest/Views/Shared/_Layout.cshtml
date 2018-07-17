@@ -18,7 +18,7 @@
 </head>
 <body>
     <div id="react-navbar"></div>
-    <div id="app-data" data-username="@ViewData[ViewDataConst.UserName]"></div>
+    <div id="app-data" data-username="@ViewData[ViewDataConst.UserName]">@Html.AntiForgeryToken();</div>
     <div class="container body-content">
         @RenderBody()
         <hr/>
