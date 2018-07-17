@@ -41,8 +41,8 @@ module.exports = {
     },
     plugins: [
         new webpack.DefinePlugin({
-            'process.env.NODE_ENV': 'production', 
-            'process.env.DEBUG': 'false'
+            'process.env.NODE_ENV': JSON.stringify('development'),
+            'process.env.DEBUG': JSON.stringify(true)
         }),
         new awesome.CheckerPlugin()
     ]
